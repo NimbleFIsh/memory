@@ -1,0 +1,32 @@
+body {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  align-items: center;
+}
+
+table {
+  border: 2px solid grey;
+  border-spacing: 3px;
+  transform: scale(1.5);
+}
+
+td {
+  border: 2px solid grey;
+}
+
+tr > td {
+  cursor: default;
+}
+
+tr#base > td {
+  cursor: pointer;
+}
+
+.arrow_top:after {
+  content: '\2191';
+}
+
+.arrow_bottom:after {
+  content: '\2193';
+}
