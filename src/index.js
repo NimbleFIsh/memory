@@ -10,13 +10,17 @@ function getInfo() {
   return sessionStorage.sort && JSON.parse(sessionStorage.sort);
 }
 
-function renderTable(data) {
+function clearTable() {
   let repeat = 0;
   while (repeat < 3) {
     document.getElementsByTagName('tr').forEach((el) => el.id !== 'base' && el.remove());
     // Оставляет 2 элемента и удаляет их по одному, не понятно почему, поэтому повтор в цикле
     repeat += 1;
   }
+}
+
+function renderTable(data) {
+  clearTable();
   const base = document.getElementById('base');
   data.forEach((el) => base.insertAdjacentHTML('afterend', `
     <tr>
@@ -61,8 +65,12 @@ function optEv(type, secondData) {
   if (info.count === 0) {
     document.getElementById(`sort_${type}`).classList.remove('arrow_top');
     document.getElementById(`sort_${type}`).classList.remove('arrow_bottom');
-    document.getElementById('table').children[0].outerHTML = secondData;
-    ['id', 'title', 'year', 'imdb'].forEach((t) => document.getElementById(`sort_${type}`).addEventListener('click', () => optEv(t, secondData)));
+    clearTable();
+    const data = secondData.reverse();
+    data.forEach((k) => {
+      document.getElementById('table').children[0].children[0].insertAdjacentHTML('afterend',
+        `<tr><td>${k.id}</td><td>${k.title}</td><td>(${k.year})</td><td>imdb: ${k.imdb.toFixed(2)}</td></tr>`);
+    });
   } else {
     if (info.count === 1) {
       document.getElementById(`sort_${type}`).classList.remove('arrow_top');
@@ -76,11 +84,13 @@ function optEv(type, secondData) {
 }
 
 function initListeners() {
-  const secondData = document.getElementById('table').children[0].outerHTML;
+  const secondData = dataJSON;
   const info = getInfo();
-  document.getElementById(`sort_${info.type}`).classList.add(((info.count === 1) && 'arrow_bottom') || ((info.count === 2) && 'arrow_top'));
-  if (document.getElementById(`sort_${info.type}`).classList.contains('arrow_bottom')) renderTable(sortable());
-  if (document.getElementById(`sort_${info.type}`).classList.contains('arrow_top')) renderTable(sortable());
+  if (Object.keys(info).length > 0) {
+    document.getElementById(`sort_${info.type}`).classList.add(((info.count === 1) && 'arrow_bottom') || ((info.count === 2) && 'arrow_top'));
+    if (document.getElementById(`sort_${info.type}`).classList.contains('arrow_bottom')) renderTable(sortable());
+    if (document.getElementById(`sort_${info.type}`).classList.contains('arrow_top')) renderTable(sortable());
+  }
   ['id', 'title', 'year', 'imdb'].forEach((type) => document.getElementById(`sort_${type}`).addEventListener('click', () => optEv(type, secondData)));
 }
 
