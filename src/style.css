@@ -21,6 +21,7 @@ tr > td {
 
 tr#base > td {
   cursor: pointer;
+  user-select: none;
 }
 
 .arrow_top:after {
